@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Interactive Name List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+    }
+    input[type="text"] {
+      padding: 8px;
+      width: 200px;
+    }
+    button {
+      padding: 8px 12px;
+      margin-left: 8px;
+    }
+    ul {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Enter Names to the List</h2>
+
+<input type="text" id="nameInput" placeholder="Enter a name" />
+<button id="addButton">Add Name</button>
+
+<h3>Names List:</h3>
+<ul id="nameList"></ul>
+
+<script>
+  // Array to store names
+  const names = [];
+
+  // Get DOM elements
+  const inputField = document.getElementById('nameInput');
+  const addButton = document.getElementById('addButton');
+  const listContainer = document.getElementById('nameList');
+
+  // Function to add name to array and update display
+  function addName() {
+    const name = inputField.value.trim();
+    if (name !== "") {
+      names.push(name); // Store data in array
+      inputField.value = ""; // Clear input
+      displayNames(); // Update the display
+    } else {
+      alert("Please enter a name.");
+    }
+  }
+
+  // Function to display all names using a loop
+  function displayNames() {
+    listContainer.innerHTML = ""; // Clear existing list
+    for (let i = 0; i < names.length; i++) {
+      const listItem = document.createElement('li');
+      listItem.textContent = names[i];
+      listContainer.appendChild(listItem);
+    }
+  }
+
+  // Attach event listener to button
+  addButton.addEventListener('click', addName);
+
+  // Optional: Allow pressing Enter to add name
+  inputField.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+      addName();
+    }
+  });
+</script>
+
+</body>
+</html>

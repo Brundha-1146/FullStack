@@ -1,0 +1,186 @@
+* {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(rgb(250, 147, 164));
+      color: #333;
+      line-height: 1.6;
+    }
+    .banner {
+      background-color: rgb(255, 162, 101);
+      padding: 3rem 1rem;
+      text-align: center;
+    }
+    .banner h1 {
+      font-size: 3rem;
+      color: #fff;
+      margin-bottom: 0.5rem;
+      letter-spacing: 2px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    nav.navbar {
+      background: linear-gradient(rgb(183, 243, 183),rgb(52, 235, 52));
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      padding: 1rem 0;
+    }
+    nav.navbar ul {
+      display: flex;
+      justify-content: center;
+      list-style: none;
+    }
+    nav.navbar li {
+      margin: 0 1.5rem;
+    }
+    nav.navbar a {
+      color: #fff;
+      font-weight: 600;
+      font-size: 1.1rem;
+      padding: 0.75rem 1.2rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+    nav.navbar a:hover {
+      background: #fff;
+      color: #333;
+      transform: scale(1.05);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 4rem 1rem;
+      background: linear-gradient(135deg, rgb(188, 143, 231) 0%, rgb(72, 12, 128) 100%);
+      color: #fff;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      letter-spacing: 2px;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+    }
+    header p {
+      font-size: 1.3rem;
+      max-width: 600px;
+      line-height: 1.5;
+    }
+    section {
+      max-width: 1000px;
+      margin: 3rem auto;
+      padding: 2rem;
+      background: rgba(255,255,255,0.8);
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    section:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+    }
+    h2 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      color: #222;
+      position: relative;
+    }
+    h2::after {
+      content: "";
+      display: block;
+      width: 60px;
+      height: 4px;
+      background: #ff6f61;
+      margin: 0.5rem auto 0;
+      border-radius: 2px;
+    }
+    p {
+      font-size: 1.2rem;
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 1.5rem;
+      line-height: 1.6;
+    }
+#skills h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 20px;
+}
+.skill-item {
+  background-color: #f0f4f8;
+  box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+  padding: 15px 20px;
+  border-radius: 10px;
+  text-align: center;
+  transform: scale(1.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer; 
+}
+.skill-item:hover {
+  transform: scale(1.1);
+  box-shadow: 0 12px 20px rgba(0,0,0,0.3);
+}
+    .project-cards {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .project-card {
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      width: 250px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .project-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 12px 20px rgba(0,0,0,0.3);
+    }
+    .project-card h3 {
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+      color: #222;
+    }
+    footer {
+      background-color: rgb(172, 119, 221);
+      color: #fff;
+      text-align: center;
+      padding: 2rem 1rem;
+      margin-top: 4rem;
+    }
+    @media(max-width: 768px) {
+      header h1 {
+        font-size: 2rem;
+      }
+      section {
+        margin: 2rem 1rem;
+        padding: 1.5rem;
+      }
+      .project-card {
+        width: 100%;
+        max-width: 300px;
+      }
+      nav.navbar ul {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      h2 {
+        font-size: 2rem;
+      }
+    }

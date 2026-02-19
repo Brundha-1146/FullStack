@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Notes Saver App</title>
+<style>
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f6d365, #fda085);
+    color: #4B0082;
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+}
+h1 {
+    text-align: center;
+    color: purple;
+}
+#searchBox {
+    width: 100%;
+    max-width: 300px;
+    padding: 10px;
+    margin: 10px auto;
+    display: block;
+    border: 6px solid blue;
+    border-radius: 8px;
+    background-color: #fff8dc;
+    font-size: 1em;
+}
+#noteInput {
+    width: 100%;
+    max-width: 600px;
+    height: 120px;
+    padding: 12px;
+    margin: 10px auto;
+    display: block;
+    border: 6px solid rgb(118, 240, 118);
+    border-radius: 8px;
+    resize: vertical;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fffacd;
+}
+button {
+    background-color: #FF6F61;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s, transform 0.2s;
+}
+button:hover {
+    background-color: #FF3B2E;
+    transform: scale(1.05);
+}
+#fileInput {
+    display: block;
+    margin: 10px auto;
+}
+#notesList {
+    margin-top: 30px;
+}
+.note {
+    background: linear-gradient(135deg, #89f7fe, #66a6ff);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    padding: 15px;
+    margin: 15px auto;
+    border: 4px solid rgb(233, 99, 144);
+    border-radius: 10px;
+    width: 100%;
+    max-width: 700px;
+    box-sizing: border-box;
+    transition: box-shadow 0.3s, transform 0.3s;
+}
+.note:hover {
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+.note-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.note h3 {
+    margin: 0;
+    font-size: 1.1em;
+    color: #34495e;
+}
+.deleteBtn {
+    background-color: #e74c3c;
+    padding: 6px 12px;
+}
+.deleteBtn:hover {
+    background-color: #c0392b;
+}
+.note-time {
+    font-size: 0.85em;
+    color: #555;
+    margin-top: 8px;
+}
+.files-section {
+    margin-top: 12px;
+}
+.files-section strong {
+    display: block;
+    margin-bottom: 8px;
+    color: #2c3e50;
+}
+.file-link {
+    display: inline-block;
+    margin: 4px 0;
+    padding: 6px 10px;
+    border-radius: 4px;
+    background-color: #ffeaa7;
+    text-decoration: none;
+    color: #2c3e50;
+    max-width: 100%;
+    word-wrap: break-word;
+    transition: background-color 0.3s;
+}
+.file-link:hover {
+    background-color: #fdcb6e;
+}
+img {
+    max-width: 100px;
+    max-height: 100px;
+    margin-top: 8px;
+    margin-right: 8px;
+    border-radius: 10px;
+    border: 6px solid #2980b9;
+}
+</style>
+</head>
+<body>
+<h1>🗒️ Notes Saver</h1>
+<input type="text" id="searchBox" placeholder="Search notes..." />
+<textarea id="noteInput" placeholder="Enter your note here"></textarea>
+<input type="file" id="fileInput" multiple />
+<div style="text-align: center;">
+    <button id="saveBtn">Save Note</button>
+    <button id="clearBtn">Clear All</button>
+</div>
+<h2 style="text-align:center; margin-top:40px;">Saved Notes</h2>
+<div id="notesList"></div>
+<script>
+const noteInput = document.getElementById("noteInput");
+const saveBtn = document.getElementById("saveBtn");
+const clearBtn = document.getElementById("clearBtn");
+const notesList = document.getElementById("notesList");
+const searchBox = document.getElementById("searchBox");
+const fileInput = document.getElementById("fileInput");
+window.onload = () => {
+    displayNotes();
+};
+saveBtn.onclick = () => {
+    let notes = JSON.parse(localStorage.getItem("notes")) || [];
+    const noteText = noteInput.value.trim();
+    if (noteText.length > 1000) {
+        alert("Note cannot exceed 1000 characters.");
+        return;
+    }
+    if (noteText !== "") {
+        if (notes.length >= 10) {
+            alert("Maximum of 10 notes. Please delete some before adding new ones.");
+            return;
+        }
+        const now = new Date();
+        const timestamp = now.toLocaleString();
+        const files = Array.from(fileInput.files);
+        const fileInfos = files.map(file => ({
+            name: file.name,
+            size: file.size,
+            type: file.type,
+            dataUrl: ""
+        }));
+        const readerPromises = files.map(file => {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    fileInfos.find(f => f.name === file.name).dataUrl = reader.result;
+                    resolve();
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        });
+        Promise.all(readerPromises).then(() => {
+            notes.push({ text: noteText, date: timestamp, files: fileInfos });
+            localStorage.setItem("notes", JSON.stringify(notes));
+            noteInput.value = "";
+            fileInput.value = "";
+            displayNotes();
+        }).catch(() => {
+            alert("Error reading files");
+        });
+    } else {
+        alert("Please enter a note");
+    }
+};
+clearBtn.onclick = () => {
+    localStorage.removeItem("notes");
+    displayNotes();
+};
+searchBox.oninput = () => {
+    displayNotes();
+};
+function displayNotes() {
+    let notes = JSON.parse(localStorage.getItem("notes")) || [];
+    const filterText = searchBox.value.toLowerCase();
+    notesList.innerHTML = "";
+    const filteredNotes = notes.filter(n => n.text.toLowerCase().includes(filterText));
+    if (filteredNotes.length === 0) {
+        notesList.innerHTML = "<p style='text-align:center; color:#888;'>No notes found.</p>";
+        return;
+    }
+    filteredNotes.forEach((note, index) => {
+        const noteDiv = document.createElement("div");
+        noteDiv.className = "note";
+        let filesHtml = "";
+        if (note.files && note.files.length > 0) {
+            filesHtml = "<div class='files-section'><strong>Attachments:</strong>";
+            note.files.forEach(file => {
+                if (file.dataUrl && file.type.startsWith("image/")) {
+                    filesHtml += `<img src="${file.dataUrl}" alt="${file.name}">`;
+                } else if (file.dataUrl) {
+                    filesHtml += `<a class='file-link' href="${file.dataUrl}" download="${file.name}">${file.name}</a>`;
+                } else {
+                    filesHtml += `<div class='file-link'>${file.name} (${Math.round(file.size/1024)} KB)</div>`;
+                }
+            });
+            filesHtml += "</div>";
+        }
+        noteDiv.innerHTML = `
+            <div class="note-header">
+                <h3>${index + 1}. ${note.text}</h3>
+                <button class="deleteBtn">Delete</button>
+            </div>
+            <div class="note-time">Created: ${note.date}</div>
+            ${filesHtml}
+        `;
+        noteDiv.querySelector(".deleteBtn").onclick = () => {
+            deleteNoteByText(note.text);
+        };
+        notesList.appendChild(noteDiv);
+    });
+}
+function deleteNoteByText(noteText) {
+    let notes = JSON.parse(localStorage.getItem("notes")) || [];
+    notes = notes.filter(n => n.text !== noteText);
+    localStorage.setItem("notes", JSON.stringify(notes));
+    displayNotes();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Student Mark Analyzer</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to bottom, #d19ff4, #e6ccff);
+    color: #fff;
+    text-align: center;
+    background-repeat: no-repeat;
+    margin-top: 50px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .main-container {
+    background-color: #ce6bb5; 
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    width: 90%;
+    max-width: 800px;
+  }
+
+  h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+  }
+
+  /* Container for input and buttons */
+  .controls {
+    margin-bottom: 20px;
+  }
+
+  input[type="number"] {
+    padding: 12px 20px;
+    font-size: 1em;
+    border: none;
+    border-radius: 8px;
+    outline: none;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  }
+
+  input[type="number"]:focus {
+    box-shadow: 0 0 10px #fff;
+  }
+
+  /* Buttons styling with hover effects */
+  button {
+    padding: 12px 25px;
+    margin: 0 10px;
+    font-size: 1em;
+    border: none;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #2575fc;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+  }
+
+  button:hover {
+    background-color: #f0f0f0;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 12px rgba(0,0,0,0.3);
+  }
+
+  /* Results table styling */
+  #results {
+    margin: 30px auto;
+    width: 70%;
+    max-width: 700px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+
+  th, td {
+    padding: 15px;
+    text-align: center;
+  }
+
+  th {
+    background-color: rgba(255, 255, 255, 0.2);
+    font-size: 1.1em;
+  }
+
+  td {
+    font-size: 1em;
+  }
+
+  /* Responsive adjustments */
+  @media(max-width: 768px){
+    body {
+      margin-top: 20px;
+    }
+
+    input[type="number"] {
+      width: 150px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 0.9em;
+    }
+
+    #results {
+      width: 90%;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="main-container">
+  <h1> 🌠 Student Mark Analyzer</h1>
+  <div class="controls">
+    <input type="number" id="markInput" placeholder="Enter Mark (0-100)" min="0" max="100" />
+    <button id="addBtn">Add Mark</button>
+    <button id="sortAscBtn">Sort Ascending</button>
+    <button id="sortDescBtn">Sort Descending</button>
+    <button id="resetBtn">Reset</button>
+  </div>
+  <div id="results"></div>
+</div>
+
+<script>
+  const marks = [];
+  const input = document.getElementById("markInput");
+  const addBtn = document.getElementById("addBtn");
+  const sortAscBtn = document.getElementById("sortAscBtn");
+  const sortDescBtn = document.getElementById("sortDescBtn");
+  const resetBtn = document.getElementById("resetBtn");
+  const resultsDiv = document.getElementById("results");
+
+  addBtn.addEventListener("click", () => {
+    const mark = Number(input.value);
+    if (mark >= 0 && mark <= 100) {
+      marks.push(mark);
+      input.value = "";
+      analyzeMarks();
+    } else {
+      alert("Please enter a valid mark between 0 and 100");
+    }
+  });
+
+  sortAscBtn.addEventListener("click", () => {
+    marks.sort((a, b) => a - b);
+    analyzeMarks();
+  });
+
+  sortDescBtn.addEventListener("click", () => {
+    marks.sort((a, b) => b - a);
+    analyzeMarks();
+  });
+
+  resetBtn.addEventListener("click", () => {
+    marks.length = 0;
+    resultsDiv.innerHTML = "";
+  });
+
+  function analyzeMarks() {
+    if (marks.length === 0) {
+      resultsDiv.innerHTML = "";
+      return;
+    }
+
+    let total = 0;
+    let highest = marks[0];
+    let lowest = marks[0];
+    for (let m of marks) {
+      total += m;
+      if (m > highest) highest = m;
+      if (m < lowest) lowest = m;
+    }
+    const average = (total / marks.length).toFixed(2);
+
+    // Grade calculation
+    let grade;
+    if (average >= 90) {
+      grade = 'A';
+    } else if (average >= 80) {
+      grade = 'B';
+    } else if (average >= 70) {
+      grade = 'C';
+    } else {
+      grade = 'Fail';
+    }
+
+    // Display results in a table
+    resultsDiv.innerHTML = `
+      <table>
+        <tr>
+          <th>Marks Entered</th>
+          <td>${marks.join(", ")}</td>
+        </tr>
+        <tr>
+          <th>Total Marks</th>
+          <td>${total}</td>
+        </tr>
+        <tr>
+          <th>Average Marks</th>
+          <td>${average}</td>
+        </tr>
+        <tr>
+          <th>Highest Marks</th>
+          <td>${highest}</td>
+        </tr>
+        <tr>
+          <th>Lowest Marks</th>
+          <td>${lowest}</td>
+        </tr>
+        <tr>
+          <th>Grade</th>
+          <td>${grade}</td>
+        </tr>
+      </table>
+    `;
+  }
+</script>
+</body>
+</html>
